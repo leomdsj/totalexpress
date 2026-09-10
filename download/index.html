@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Bipagem ICS — download</title>
+<style>
+  :root { --verde:#14532d; --claro:#f6f7f6; --borda:#d8ddd8; --texto:#1b1f1b; }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:24px 16px 64px; font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+         color:var(--texto); background:var(--claro); }
+  main { max-width:640px; margin:0 auto; }
+  /* Quatro tamanhos so: 28 / 20 / 16 / 13. Passo minimo de 1.23 entre eles,
+     para a hierarquia sobreviver a tela pequena de PDA e a luz de galpao. */
+  h1 { font-size:28px; line-height:1.2; margin:0 0 6px; color:var(--verde); }
+  .sub { margin:0 0 28px; color:#5a635a; font-size:13px; }
+  .cartao { background:#fff; border:1px solid var(--borda); border-radius:10px; padding:20px; margin-bottom:20px; }
+  .cartao h2 { font-size:20px; margin:0 0 2px; }
+  .cartao .para { color:#5a635a; font-size:13px; margin:0 0 16px; }
+  a.botao { display:block; text-align:center; background:var(--verde); color:#fff; text-decoration:none;
+            font-size:20px; font-weight:600; padding:16px; border-radius:8px; margin-bottom:16px; }
+  a.botao:active { background:#0e3a1f; }
+  ol { margin:0; padding-left:20px; }
+  ol li { margin-bottom:9px; }
+  code { background:#eceeec; padding:1px 5px; border-radius:4px; font-size:13px; }
+  .aviso { background:#fff8e6; border:1px solid #e8d9a8; border-radius:8px; padding:12px 14px;
+           font-size:13px; margin-top:16px; }
+  .qr { text-align:center; margin:28px 0; }
+  .qr img { width:180px; height:180px; border:1px solid var(--borda); border-radius:8px; background:#fff; }
+  .qr p { font-size:13px; color:#5a635a; margin:8px 0 0; }
+  footer { font-size:13px; color:#7a827a; text-align:center; margin-top:36px; }
+</style>
+</head>
+<body>
+<main>
+
+  <h1>Bipagem ICS — sinal sonoro</h1>
+  <p class="sub">Devolve o bip de sucesso e de erro na tela de bipagem do ICS.</p>
+
+  <section class="cartao">
+    <h2>Aplicativo para o PDA</h2>
+    <p class="para">Para os coletores Android usados na bipagem.</p>
+
+    <a class="botao" href="https://github.com/leomdsj/ics-bipagem-download/releases/latest/download/bipagem-ics.apk">Baixar o aplicativo (APK)</a>
+
+    <ol>
+      <li>Toque no botão acima. O download começa na hora.</li>
+      <li>Abra o arquivo baixado. O Android vai pedir para autorizar
+          <strong>instalar apps desconhecidos</strong> para o navegador — autorize e volte.</li>
+      <li>Se aparecer um aviso do <strong>Play Protect</strong>, escolha
+          <strong>Instalar mesmo assim</strong>. É esperado: o app não vem da Play Store.</li>
+      <li>Abra o app <strong>Bipagem ICS</strong> e faça login normalmente.</li>
+      <li>Suba o <strong>volume de mídia</strong> do aparelho. Não é o volume de toque.</li>
+    </ol>
+
+    <div class="aviso">
+      O leitor de código de barras bipa ao ler a etiqueta. O sistema bipa ao aceitar a
+      encomenda. São dois sons diferentes: só o segundo confirma que a encomenda entrou.
+    </div>
+  </section>
+
+  <section class="cartao">
+    <h2>Extensão para o computador</h2>
+    <p class="para">Para quem bipa pelo Chrome, no computador ou notebook.</p>
+
+    <a class="botao" href="https://github.com/leomdsj/ics-bipagem-download/releases/latest/download/extensao-som-ics.zip">Baixar a extensão (ZIP)</a>
+
+    <ol>
+      <li>Baixe o arquivo e <strong>extraia</strong> numa pasta fixa, que ninguém vá apagar.
+          Sugestão: <code>C:\ICS\extensao-som</code>.</li>
+      <li>No Chrome, abra <code>chrome://extensions</code>.</li>
+      <li>Ligue o <strong>Modo do desenvolvedor</strong>, no canto superior direito.</li>
+      <li>Clique em <strong>Carregar sem compactação</strong> e escolha a pasta do passo 1.</li>
+      <li>Confirme que o cartão <strong>ICS Bipagem - sinal sonoro</strong> apareceu e está ativado.</li>
+    </ol>
+
+    <div class="aviso">
+      Se a pasta for movida ou apagada, a extensão para de funcionar. O Chrome também mostra
+      um aviso sobre o Modo do desenvolvedor a cada abertura: pode fechar, não desliga nada.
+    </div>
+  </section>
+
+  <div class="qr">
+    <img src="qr.png" alt="QR code desta página">
+    <p>Aponte o leitor do PDA para este código para abrir esta página.</p>
+  </div>
+
+  <footer>
+    Uso interno. Não coleta, não armazena e não envia nenhum dado.
+  </footer>
+
+</main>
+</body>
+</html>
