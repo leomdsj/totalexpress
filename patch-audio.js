@@ -130,7 +130,9 @@
             try {
                 var el = cache[tipo] || (cache[tipo] = new Audio(SONS[tipo]));
                 // Bipe rapido logo apos o sucesso: sem isto o toque mudo cortava o som em curso.
-                if (!el.paused) return;
+                // Causa medida do relato "erro toca, sucesso nao": destravar mutava e depois
+                // pausava/zerava o MESMO elemento que tocar('sucesso') tinha acabado de iniciar.
+                if (!el.paused) { log('destravar: ' + tipo + ' ja esta tocando, pulei (nao cortei o som)'); return; }
                 el.muted = true;
                 var p = el.play();
                 if (p && p.then) {
