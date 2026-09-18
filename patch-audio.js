@@ -31,7 +31,7 @@
     'use strict';
 
     // Suba a cada mudanca: e o que diz, no registro do PDA, qual patch esta rodando.
-    var VERSAO = '2026-09-17.1';
+    var VERSAO = '2026-09-18.1';
     var PREFIXO = '[beep]';
 
     function log() {
