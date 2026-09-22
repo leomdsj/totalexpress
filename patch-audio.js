@@ -16,6 +16,7 @@
  *              alert(): o do AJAX (ajax_validar_rota_awb.php com sucesso:false) e o
  *              que o servidor injeta no topo da resposta do POST de caf_reg_do.php.
  *              Enganchar o alert cobre todos de uma vez, sem mapear caso a caso.
+ *              O som de erro e gerado em memoria, igual ao do app desktop (ERRO_TONS).
  *   SUCESSO -> compara o contador de encomendas da CAF com o valor guardado em
  *              sessionStorage. Erro nunca incrementa o contador, entao ele so sobe
  *              quando a encomenda entrou de verdade. Sobrevive ao reload de pagina.
@@ -31,7 +32,7 @@
     'use strict';
 
     // Suba a cada mudanca: e o que diz, no registro do PDA, qual patch esta rodando.
-    var VERSAO = '2026-09-18.1';
+    var VERSAO = '2026-09-22.1';
     var PREFIXO = '[beep]';
 
     function log() {
@@ -61,7 +62,34 @@
         return;
     }
 
-    var SONS = { sucesso: '/audio/som-sucesso.wav', erro: '/audio/som-erro.wav' };
+    // Erro = o mesmo som do app desktop, que o operador ja conhece (Python _gerar_wav):
+    // PCM 16-bit mono 44100 Hz, senoide pura, amplitude maxima fixa, sem envelope.
+    // [Hz, ms], Hz 0 = silencio. Gerado aqui, nao depende do /audio/som-erro.wav do ICS.
+    var ERRO_TONS = [[400, 120], [0, 70], [400, 120], [0, 70], [400, 120], [0, 70], [220, 650]];
+
+    function gerarWav(tons) {
+        var TAXA = 44100, amostras = [];
+        tons.forEach(function (t) {
+            var n = Math.floor(TAXA * t[1] / 1000);
+            for (var i = 0; i < n; i++) {
+                amostras.push(t[0] ? Math.round(32767 * Math.sin(2 * Math.PI * t[0] * i / TAXA)) : 0);
+            }
+        });
+        var buf = new ArrayBuffer(44 + amostras.length * 2), v = new DataView(buf);
+        function txt(o, s) { for (var i = 0; i < s.length; i++) { v.setUint8(o + i, s.charCodeAt(i)); } }
+        txt(0, 'RIFF'); v.setUint32(4, 36 + amostras.length * 2, true); txt(8, 'WAVE');
+        txt(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+        v.setUint32(24, TAXA, true); v.setUint32(28, TAXA * 2, true);
+        v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+        txt(36, 'data'); v.setUint32(40, amostras.length * 2, true);
+        amostras.forEach(function (a, i) { v.setInt16(44 + i * 2, a, true); });
+        return buf;
+    }
+
+    var SONS = {
+        sucesso: '/audio/som-sucesso.wav',
+        erro: URL.createObjectURL(new Blob([gerarWav(ERRO_TONS)], { type: 'audio/wav' }))
+    };
     var TOM = { sucesso: 880, erro: 220 };   // Hz do fallback sintetizado
     var cache = {};
     var ctxAudio = null;
@@ -186,11 +214,23 @@
         log('erro JS na pagina: ' + e.message + ' @ ' + e.filename + ':' + e.lineno);
     });
 
+    // So o app do PDA tem a ponte (flutter_inappwebview). Na extensao, so registra.
+    // APK antigo nao tem o handler "vibrar": a chamada fica sem resposta, o som toca igual.
+    function vibrar() {
+        var ponte = window.flutter_inappwebview;
+        if (!ponte || typeof ponte.callHandler !== 'function') { log('sem ponte do app: nao vibra aqui'); return; }
+        try {
+            ponte.callHandler('vibrar').then(function (r) { log('vibrar: ' + r); },
+                function (e) { log('vibrar falhou:', e && e.message); });
+        } catch (e) { log('vibrar lancou excecao:', e && e.message); }
+    }
+
     // ---- ERRO: todo caminho de erro da bipagem passa por aqui ----
     var alertOriginal = window.alert;
     window.alert = function (msg) {
         log('alert interceptado: ' + String(msg).slice(0, 160));
         try { tocar('erro'); } catch (e) { log('falha ao tocar erro:', e && e.message); }
+        vibrar();
         return alertOriginal.apply(window, arguments);
     };
 
